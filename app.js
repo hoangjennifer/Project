@@ -67,7 +67,7 @@ app.post('/add-user-ajax', function (req, res) {
 
 app.delete('/delete-user-ajax/', function (req, res, next) {
     let data = req.body;
-    let userID = parseInt(data.userID);
+    let userID = parseInt(data.id);
     let deleteTasks = `DELETE FROM Tasks WHERE userID = ?`;
     let deleteUsers = `DELETE FROM Users WHERE userID = ?`;
 
