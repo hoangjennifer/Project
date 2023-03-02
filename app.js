@@ -71,7 +71,6 @@ app.delete('/delete-user-ajax/', function (req, res, next) {
     let deleteTasks = `DELETE FROM Tasks WHERE userID = ?`;
     let deleteUsers = `DELETE FROM Users WHERE userID = ?`;
 
-
     // Run the 1st query
     db.pool.query(deleteTasks, [userID], function (error, rows, fields) {
         if (error) {
@@ -81,20 +80,55 @@ app.delete('/delete-user-ajax/', function (req, res, next) {
             res.sendStatus(400);
         }
 
-        else
-            {
-                // Run the second query
-                db.pool.query(deleteUsers, [userID], function(error, rows, fields) {
+        else {
+            // Run the second query
+            db.pool.query(deleteUsers, [userID], function (error, rows, fields) {
 
-                    if (error) {
-                        console.log(error);
-                        res.sendStatus(400);
-                    } else {
-                        res.sendStatus(204);
-                    }
-                })
-            }
-})});
+                if (error) {
+                    console.log(error);
+                    res.sendStatus(400);
+                } else {
+                    res.sendStatus(204);
+                }
+            })
+        }
+    })
+});
+
+app.put('/put-user-ajax', function (req, res, next) {
+    let data = req.body;
+
+    let name = parseInt(data.name);
+    let email = parseInt(data.email);
+
+    let selectName = `SELECT * FROM Users WHERE name = ?`;
+    let queryUpdateEmail = `UPDATE Users SET email = ? WHERE Users.userID = ?`;
+
+    // Run the 1st query
+    db.pool.query(selectName, [name], function (error, rows, fields) {
+        if (error) {
+
+            // Log the error to the terminal so we know what went wrong, and send the visitor an HTTP response 400 indicating it was a bad request.
+            console.log(error);
+            res.sendStatus(400);
+        }
+
+        // If there was no error, we run our second query and return that data so we can use it to update the people's
+        // table on the front-end
+        else {
+            // Run the second query
+            db.pool.query(queryUpdateEmail, [name, email], function (error, rows, fields) {
+
+                if (error) {
+                    console.log(error);
+                    res.sendStatus(400);
+                } else {
+                    res.send(rows);
+                }
+            })
+        }
+    })
+});
 
 /*
     LISTENER
